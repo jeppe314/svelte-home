@@ -11,7 +11,6 @@
 });
 
 
-
   async function getImage() {
     try {
       // TODO: Activate this later, leave commented out when dev because rate limit 50/h
@@ -29,7 +28,9 @@
   });
 </script>
 
-<div class="hub-background" class:loaded={loaded} style="background-image: url({imgSrc});"></div> 
+<div class="hub-background" class:loaded={loaded} style="background-image: url({imgSrc});">
+<slot />
+</div> 
 
 <style>
   .hub-background {

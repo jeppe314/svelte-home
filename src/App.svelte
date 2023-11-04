@@ -1,11 +1,12 @@
 <script>
 import Background from "./components/Background.svelte";
+  import Board from "./components/Board.svelte";
 </script>
 
 <main>
-    <Background />
+    <Background>
+        <Board />
+    </Background>
+    
 </main>
 
-<style>
-
-</style>
