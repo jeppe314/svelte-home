@@ -1,11 +1,13 @@
 <script>
   import Card from "./Card.svelte";
-
+    import {store} from "../store/store";
 
 </script>
 
 <section>
-    <Card />
+    {#each $store.cards as card (card.name)}
+        <Card card={card} />
+    {/each}
 </section>
 
 <style lang="scss">

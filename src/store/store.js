@@ -7,9 +7,17 @@ const initialState = {
     IS_STALLED: "isStalled",
     IS_FINISHED: "isFinished",
   }),
-  message: "Hello world!",
+  cards: [
+    {
+      name: "Card 1",
+    },
+    {
+      name: "Card 2",
+    },
+  ],
 };
 
 export const store = writable(initialState);
 
-export const updateMessage = (newMessage) => store.update((currentState) => ({ ...currentState, message: newMessage }));
+// generic update component to update any key you want
+export const updateStore = (key, newValue) => store.update((state) => ({ ...state, [key]: newValue }));
