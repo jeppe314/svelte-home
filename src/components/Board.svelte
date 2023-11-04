@@ -1,9 +1,11 @@
 <script>
+  import Card from "./Card.svelte";
+
 
 </script>
 
 <section>
-    <p>HIH</p>
+    <Card />
 </section>
 
 <style lang="scss">
