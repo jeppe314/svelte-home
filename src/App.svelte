@@ -4,7 +4,6 @@ import Background from "./components/Background.svelte";
 
 <main>
     <Background />
-<p>Hello world</p>
 </main>
 
 <style>

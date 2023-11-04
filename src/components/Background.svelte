@@ -1,19 +1,23 @@
 <script>
-  import axios from 'axios';
-  import { createClient } from 'pexels';
+  import { createApi } from 'unsplash-js';
   import { onMount } from 'svelte';
 
-  const client = createClient('563492ad6f91700001000001eab712a512294704a89a7bd982be1889');
-  
+
   let imgSrc = '';
   let loaded = false; // Reactive variable to track image load status
 
+  const unsplash = createApi({
+  accessKey: import.meta.env.VITE_UNSPLASH_ACCESS,
+});
+
+
+
   async function getImage() {
-    const query = 'Rainy day';
     try {
-      const response = await client.photos.search({ query, per_page: 1, orientation: 'landscape', size: 'large' });
-      console.log("🚀 ~ file: Background.svelte:16 ~ getImage ~ response.photos[0].src.original:", response.photos[0].src)
-      imgSrc = response.photos[0].src.landscape;
+      // TODO: Activate this later, leave commented out when dev because rate limit 50/h
+      imgSrc="https://images.unsplash.com/photo-1506202687253-52e1b29d3527?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      // const {response} = await unsplash.photos.getRandom({ query: 'landscape', count: 1, orientation: 'landscape', featured: true });
+      // imgSrc = response[0].urls.regular;
       loaded = true; // Set loaded to true after the image source has been set
     } catch (error) {
       console.error('Error fetching image:', error);
@@ -29,6 +33,7 @@
 
 <style>
   .hub-background {
+    object-fit: cover;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
