@@ -21,3 +21,10 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
+button {
+  border: none;
+  padding: none;
+  background-color: transparent;
+  cursor: pointer;
+}

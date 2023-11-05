@@ -29,8 +29,8 @@ const stopDrag = () => {
 
 </script>
 
-<div bind:this={cardElement} on:mouseup={stopDrag} style="position: absolute;">
-    <header on:mousedown={startDrag} on:mousemove={moveCard}><Icon icon="material-symbols:drag-handle" color="gray" width="2em" height="2em"/>
+<div bind:this={cardElement}  style="position: absolute;" >
+    <header on:mousedown={startDrag} on:mousemove={moveCard} on:mouseup={stopDrag}>
 </header>
     <h1>{card.name}</h1>
 </div>
@@ -46,15 +46,11 @@ const stopDrag = () => {
         overflow:hidden;
 
         header {
-            display: flex;
-            padding:.5em;
+            background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255, 255, 255, 0) 100%);            display: flex;
+            height: 2.5em;
             justify-content: flex-end;
-            cursor: pointer;
             transition: all .5s ease;
-            &:hover {
-                background-color: rgba(70, 131, 180, 0.256);
-            }
-
+            cursor:pointer;
         }
 
         h1 {
