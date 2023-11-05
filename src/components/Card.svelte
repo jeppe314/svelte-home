@@ -1,5 +1,7 @@
 <script>
+import Icon from '@iconify/svelte';
 export let card;
+
 let cardElement
 let dragging = false
 let initialMouseX, initialMouseY, initialElementX, initialElementY
@@ -28,7 +30,8 @@ const stopDrag = () => {
 </script>
 
 <div bind:this={cardElement} on:mouseup={stopDrag} style="position: absolute;">
-    <header on:mousedown={startDrag} on:mousemove={moveCard}>Drag here</header>
+    <header on:mousedown={startDrag} on:mousemove={moveCard}><Icon icon="material-symbols:drag-handle" color="gray" width="2em" height="2em"/>
+</header>
     <h1>{card.name}</h1>
 </div>
 
@@ -43,7 +46,9 @@ const stopDrag = () => {
         overflow:hidden;
 
         header {
-            // background: steelblue;
+            display: flex;
+            padding:.5em;
+            justify-content: flex-end;
             cursor: pointer;
             transition: all .5s ease;
             &:hover {

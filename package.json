@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@iconify/svelte": "^3.1.4",
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "eslint": "^8.53.0",
     "eslint-config-airbnb-base": "^15.0.0",
