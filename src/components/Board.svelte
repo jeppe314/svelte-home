@@ -1,12 +1,13 @@
 <script>
-  import Card from "./Card.svelte";
-    import {store} from "../store/store";
+import Card from "./Card.svelte";
+import {store} from "../store/store";
+
 
 </script>
 
-<section class="grid">
-    {#each $store.cards as card (card.name)}
-        <Card card={card} />
+<section class="grid" >
+    {#each $store.cards as card, index (index)}
+        <Card card={card}/>
     {/each}
 </section>
 
