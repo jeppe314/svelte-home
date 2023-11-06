@@ -1,6 +1,8 @@
 <script>
 import Icon from '@iconify/svelte';
+import {moveRight} from '../store/store';
 export let card;
+let propStyle = $$props.style;
 
 let cardElement
 let dragging = false
@@ -29,10 +31,11 @@ const stopDrag = () => {
 
 </script>
 
-<div bind:this={cardElement}  style="position: absolute;" >
+<div bind:this={cardElement} style="grid-column: {card.position.x} / span {card.dimensions.width}; grid-row: {card.position.y} / span {card.dimensions.height};" >
     <header on:mousedown={startDrag} on:mousemove={moveCard} on:mouseup={stopDrag}>
-</header>
-    <h1>{card.name}</h1>
+    <button on:click={() => moveRight(card.title)}>Right</button>
+    </header>
+    <h1>{card.title}</h1>
 </div>
 
 <style lang="scss">
@@ -40,8 +43,8 @@ const stopDrag = () => {
         background-color: rgba(255, 255, 255, 0.3);
         box-shadow: 0 0 1em 0 rgba(255, 255, 255, 0.2);
         border-radius: 1em;
-        width:300px;
-        height: 400px;
+        width:100%;
+        height: 100%;
         backdrop-filter: blur(.3em);
         overflow:hidden;
 
