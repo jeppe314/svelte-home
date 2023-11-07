@@ -1,36 +1,58 @@
 <script>
-import Card from "./Card.svelte";
-import {store} from "../store/store";
+  import Card from "./Card.svelte";
+  import { store } from "../store/store";
+  import { flip } from "svelte/animate";
 
-// TODO: Render components dynamically from store objects from components array
+  // TODO: Render components dynamically from store objects from components
+  const dragDuration = 300;
+  let draggingSlot;
+  let animatingSlots = new Set();
+  let slots = Array(144)
+    .fill()
+    .map((_, i) => i + 1);
+
+  function swapWith(slot) {
+    if (draggingSlot === slot || animatingSlots.has(slot)) return;
+    animatingSlots.add(slot);
+    setTimeout(() => animatingSlots.delete(slot), dragDuration);
+    const slotAIndex = slots.indexOf(draggingSlot);
+    const slotBIndex = slots.indexOf(slot);
+    slots[slotAIndex] = slot;
+    slots[slotBIndex] = draggingSlot;
+  }
 </script>
 
-<section class="grid" >
-    {#each $store.cards as card, index (index)}
-        <Card card={card}/>
-    {/each}
+<section class="grid">
+  {#each slots as slot, i (slot)}
+    <article
+      style="display: grid; place-items:center;"
+      animate:flip={{ duration: dragDuration }}
+      class="slot"
+      draggable="true"
+      on:dragstart={() => (draggingSlot = slot)}
+      on:dragend={() => (draggingSlot = undefined)}
+      on:dragenter={() => swapWith(slot)}
+      on:dragover|preventDefault
+    >
+      {slot}
+    </article>
+  {/each}
 </section>
 
 <style lang="scss">
-section {
+  section {
     outline: 1px solid lime;
     height: 100%;
-    width:100%;
+    width: 100%;
     // padding: 2em;
     display: grid;
-    grid-template-columns: repeat(36, 1fr);
+    gap: 1em;
+    grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(12, 1fr);
-    &:hover {
-        // this for edit mode perhaps (gridl lines)
-        background-image: 
-            linear-gradient(0deg, #b7b7b72d 1px, transparent 1px), 
-            linear-gradient(90deg, #b7b7b72d 1px, transparent 1px);
-        background-size: calc(100vw / 36) calc(100vh / 12);
-        
-    }
+
     // gap:1em;
-    div  {
-        background: steelblue;
+    article {
+      background: steelblue;
     }
-}
+  }
 </style>

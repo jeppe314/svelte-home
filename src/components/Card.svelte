@@ -31,9 +31,8 @@ const stopDrag = () => {
 
 </script>
 
-<div bind:this={cardElement} style="grid-column: {card.position.x} / span {card.dimensions.width}; grid-row: {card.position.y} / span {card.dimensions.height};" >
+<div bind:this={cardElement} >
     <header on:mousedown={startDrag} on:mousemove={moveCard} on:mouseup={stopDrag}>
-    <button on:click={() => moveRight(card.title)}>Right</button>
     </header>
     <h1>{card.title}</h1>
 </div>

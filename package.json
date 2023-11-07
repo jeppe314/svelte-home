@@ -13,7 +13,9 @@
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "eslint": "^8.53.0",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "sass": "^1.69.5",
     "svelte": "^4.0.5",
     "vite": "^4.4.5"
