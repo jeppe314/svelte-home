@@ -13,7 +13,7 @@
   }
 </script>
 
-<section class="grid">
+<section>
   {#each $store.cards as card, index (index)}
     <!-- <Card {card} /> -->
     <p>{card.component}</p>
@@ -25,4 +25,9 @@
 </section>
 
 <style lang="scss">
+  section {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
 </style>
