@@ -1,63 +1,98 @@
 <script>
-import Icon from '@iconify/svelte';
-import {moveRight} from '../store/store';
-export let card;
-let propStyle = $$props.style;
+  import { store } from "../store/store";
+  import { onMount } from "svelte";
 
-let cardElement
-let dragging = false
-let initialMouseX, initialMouseY, initialElementX, initialElementY
+  export let card;
+  let cardElement;
+  let initialMousePos = { x: 0, y: 0 };
+  let dragging = false;
 
-const startDrag = (e) => {
+  onMount(() => {
+    // Set initial card position from store
+    const { x, y } = card.position || { x: 0, y: 0 };
+    updateElementPosition(x, y);
+  });
+
+  // Consolidate repeated logic for updating the card's position
+  const updateElementPosition = (x, y) => {
+    cardElement.style.left = `${x}px`;
+    cardElement.style.top = `${y}px`;
+  };
+
+  // Refactor to use a function to handle repetitive update logic
+  const updateCardPosition = (dx, dy) => {
+    store.update((storeState) => {
+      const updatedCards = storeState.cards.map((c) => (c.id === card.id ? { ...c, position: { x: dx, y: dy } } : c));
+      return { ...storeState, cards: updatedCards };
+    });
+  };
+
+  // Add DRY principle by creating a function to add and remove event listeners
+  const manageEventListeners = (add) => {
+    const method = add ? "addEventListener" : "removeEventListener";
+    window[method]("mousemove", moveCard);
+    window[method]("mouseup", stopDrag);
+  };
+
+  const startDrag = (e) => {
     dragging = true;
-    initialMouseX = e.clientX;
-    initialMouseY = e.clientY;
-    initialElementX = cardElement.offsetLeft;
-    initialElementY = cardElement.offsetTop;
-}
+    initialMousePos.x = e.clientX;
+    initialMousePos.y = e.clientY;
+    manageEventListeners(true);
+  };
 
-const moveCard = (e) => {
-    if (dragging) {
-        const dx = e.clientX - initialMouseX;
-        const dy = e.clientY - initialMouseY;
-        cardElement.style.left = `${initialElementX + dx}px`;
-        cardElement.style.top = `${initialElementY + dy}px`;
-    }
-}
+  const moveCard = (e) => {
+    if (!dragging) return;
 
-const stopDrag = () => {
+    const dx = e.clientX - initialMousePos.x + cardElement.offsetLeft;
+    const dy = e.clientY - initialMousePos.y + cardElement.offsetTop;
+
+    updateElementPosition(dx, dy);
+    updateCardPosition(dx, dy);
+
+    initialMousePos.x = e.clientX;
+    initialMousePos.y = e.clientY;
+  };
+
+  const stopDrag = () => {
     dragging = false;
-}
-
+    manageEventListeners(false);
+  };
 </script>
 
-<div bind:this={cardElement} style="grid-column: {card.position.x} / span {card.dimensions.width}; grid-row: {card.position.y} / span {card.dimensions.height};" >
-    <header on:mousedown={startDrag} on:mousemove={moveCard} on:mouseup={stopDrag}>
-    <button on:click={() => moveRight(card.title)}>Right</button>
-    </header>
-    <h1>{card.title}</h1>
+<div bind:this={cardElement} class="card" on:mousedown={startDrag}>
+  <!-- Card content -->
+  <header />
+  <h1>{card.title}</h1>
 </div>
 
 <style lang="scss">
-    div {
-        background-color: rgba(255, 255, 255, 0.3);
-        box-shadow: 0 0 1em 0 rgba(255, 255, 255, 0.2);
-        border-radius: 1em;
-        width:100%;
-        height: 100%;
-        backdrop-filter: blur(.3em);
-        overflow:hidden;
+  .card {
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 1em 0 rgba(255, 255, 255, 0.2);
+    border-radius: 1em;
+    width: 200px;
+    height: 400px;
+    backdrop-filter: blur(0.3em);
+    overflow: hidden;
+    position: absolute;
 
-        header {
-            background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255, 255, 255, 0) 100%);            display: flex;
-            height: 2.5em;
-            justify-content: flex-end;
-            transition: all .5s ease;
-            cursor:pointer;
-        }
+    header {
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+      display: flex;
+      height: 2.5em;
+      justify-content: flex-end;
+      transition: all 0.5s ease;
+      cursor: grab;
 
-        h1 {
-            color: black;
-        }
+      &:active {
+        cursor: grabbing;
+      }
     }
+
+    h1 {
+      color: black;
+      padding: 1em;
+    }
+  }
 </style>

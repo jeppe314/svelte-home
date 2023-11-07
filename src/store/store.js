@@ -1,7 +1,18 @@
 // src/stores.js
-import axios from "axios";
 import { writable } from "svelte/store";
 
+const STORE_KEY = "store";
+
+// Function to read the store from localStorage
+const readFromLocalStorage = () => {
+  const stored = localStorage.getItem(STORE_KEY);
+  if (stored) {
+    return JSON.parse(stored);
+  }
+  return null;
+};
+
+// Initial state
 const initialState = {
   states: Object.freeze({
     IS_FETCHING: "isFetching",
@@ -10,6 +21,7 @@ const initialState = {
   }),
   cards: [
     {
+      id: 0,
       title: "Card 1",
       position: {
         x: 15,
@@ -21,6 +33,7 @@ const initialState = {
       },
     },
     {
+      id: 1,
       title: "Overlapper",
       position: {
         x: 15,
@@ -31,26 +44,24 @@ const initialState = {
         width: 7,
       },
     },
-    // {
-    //   title: "Card 2",
-    // },
   ],
   message: "test",
 };
 
-export const store = writable(initialState);
+// Initialize store with data from localStorage if available
+const persistentState = readFromLocalStorage() || initialState;
 
-// generic update component to update any key you want
-export const updateStore = (key, newValue) => store.update((state) => ({ ...state, [key]: newValue }));
+export const store = writable(persistentState);
 
-export const moveRight = (title) => {
-  console.log("moveRight");
-  console.log(title);
+// Subscribe to the store and update localStorage whenever it changes
+store.subscribe((state) => {
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+});
+
+// Optional: Export a function to manually save the store to localStorage (can be used to force a save if needed)
+export const saveStore = () => {
   store.update((state) => {
-    const cardIndex = state.cards.findIndex((card) => card.title === title);
-    if (cardIndex !== -1) {
-      state.cards[cardIndex].position.x += 1;
-    }
-    return { ...state };
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    return state;
   });
 };
