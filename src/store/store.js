@@ -22,30 +22,23 @@ const initialState = {
   cards: [
     {
       id: 0,
+      component: "Time",
       title: "Card 1",
       position: {
         x: 15,
         y: 5,
       },
-      dimensions: {
-        height: 7,
-        width: 7,
-      },
     },
-    {
-      id: 1,
-      title: "Overlapper",
-      position: {
-        x: 15,
-        y: 5,
-      },
-      dimensions: {
-        height: 7,
-        width: 7,
-      },
-    },
+    // {
+    //   id: 1,
+    //   component: "Time",
+    //   title: "Overlapper",
+    //   position: {
+    //     x: 15,
+    //     y: 5,
+    //   },
+    // },
   ],
-  message: "test",
 };
 
 // Initialize store with data from localStorage if available
@@ -63,5 +56,23 @@ export const saveStore = () => {
   store.update((state) => {
     localStorage.setItem(STORE_KEY, JSON.stringify(state));
     return state;
+  });
+};
+
+function updateCardById(cards, id, newProperties) {
+  return cards.map((card) => {
+    if (card.id === id) {
+      return { ...card, ...newProperties };
+    }
+    return card;
+  });
+}
+
+export const updateCardPosition = (id, x, y) => {
+  store.update((currentState) => {
+    return {
+      ...currentState,
+      cards: updateCardById(currentState.cards, id, { position: { x, y } }),
+    };
   });
 };
