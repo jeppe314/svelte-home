@@ -1,37 +1,30 @@
 <script>
-  import { createApi } from 'unsplash-js';
-  import { onMount } from 'svelte';
+  import { createApi } from "unsplash-js";
+  import { onMount } from "svelte";
+  import { getCityFromIp, getCurrentWeather, getImage, store } from "../store/store";
 
-
-  let imgSrc = '';
+  let imgSrc = "";
   let loaded = false; // Reactive variable to track image load status
 
+  const weatherstackKey = import.meta.env.VITE_WEATHERSTACK_API_ACCESS;
+
   const unsplash = createApi({
-  accessKey: import.meta.env.VITE_UNSPLASH_ACCESS,
-});
+    accessKey: import.meta.env.VITE_UNSPLASH_ACCESS,
+  });
 
-
-  async function getImage() {
-    try {
-      // TODO: Activate this later, leave commented out when dev because rate limit 50/h
-      // imgSrc="https://images.unsplash.com/photo-1506202687253-52e1b29d3527?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      imgSrc="https://images.unsplash.com/photo-1445964047600-cdbdb873673d?q=80&w=1892&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      // const {response} = await unsplash.photos.getRandom({ query: 'landscape', count: 1, orientation: 'landscape', featured: true });
-      // imgSrc = response[0].urls.regular;
-      loaded = true; // Set loaded to true after the image source has been set
-    } catch (error) {
-      console.error('Error fetching image:', error);
-    }
-  }
-
-  onMount(() => {
-    getImage();
+  onMount(async () => {
+    const res = await getCityFromIp();
+    const { current } = await getCurrentWeather(res.city);
+    const img = await getImage(current);
+    console.log("🚀 ~ file: Background.svelte:19 ~ onMount ~ img:", img);
+    console.log($store.backgroundImgSrc);
+    loaded = true;
   });
 </script>
 
-<div class="hub-background" class:loaded={loaded} style="background-image: url({imgSrc});">
-<slot />
-</div> 
+<div class="hub-background" class:loaded style="background-image: url({$store.backgroundImgSrc});">
+  <slot />
+</div>
 
 <style>
   .hub-background {
@@ -48,7 +41,7 @@
     opacity: 0;
     transition: opacity 1s ease-in-out; /* Transition effect for the opacity */
   }
-  
+
   .hub-background.loaded {
     opacity: 1; /* Fully visible when loaded */
   }
